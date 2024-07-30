@@ -32,9 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Get.find<AuthController>().getUsersData(offset: offset, skip: 0, isClear: true);
 
       _listScrollController.addListener(() {
-        // Check if user has scrolled close to the end of the list
         if (_listScrollController.position.pixels >= _listScrollController.position.maxScrollExtent - 400) {
-          // Trigger when 200 pixels from bottom
           loadMoreData();
         }
       });
@@ -48,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return;
       }
 
-      offset += 1; // Increment offset
+      offset += 1;
       log('Loading more data - Offset: $offset');
       await authController.getUsersData(offset: offset, skip: (offset - 1) * 20).then((value) {
         if(value.isSuccess){

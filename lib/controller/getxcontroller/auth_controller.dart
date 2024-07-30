@@ -23,8 +23,8 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
-  List<UsersData> allUsersData = []; // Keep original data
-  List<UsersData> usersData = []; // Filtered data
+  List<UsersData> allUsersData = [];
+  List<UsersData> usersData = [];
   List<String> uniqueCountries = [];
   bool isFinished = false;
 
@@ -63,7 +63,7 @@ class AuthController extends GetxController implements GetxService {
           isFinished = true;
         } else {
           allUsersData.addAll(data);
-          usersData = List.from(allUsersData); // Initialize filtered data with all users
+          usersData = List.from(allUsersData);
           uniqueCountries = usersData.map((user) => user.address?.country ?? "").toSet().toList();
           uniqueCountries.forEach((element) {
             log('Unique country: $element');
