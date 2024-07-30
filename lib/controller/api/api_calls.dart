@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart' as getx;
 import 'package:http/http.dart' as http;
-import '../../main.dart';
 import '../../services/constants.dart';
-import '../../services/route_helper.dart';
-import '../getxcontroller/auth_controller.dart';
 import '../repositories/auth_repo.dart';
 
 class ApiCalls {
