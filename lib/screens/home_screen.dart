@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _sortAscending = true;
   int? _sortColumnIndex;
   ScrollController _listScrollController = ScrollController();
-  int offset = 1; // Initialize with your initial offset value
+  int offset = 1;
   final List<String> _genders = ['Male', 'Female'];
   String? _selectedGender;
   String? _selectedCountry;
