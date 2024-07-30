@@ -55,9 +55,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
       offset += 1; // Increment offset
       log('Loading more data - Offset: $offset');
-      await authController.getUsersData(offset: offset, skip: (offset - 1) * 20);
-      _selectedCountry = null;
-      _selectedGender = null;
+      await authController.getUsersData(offset: offset, skip: (offset - 1) * 20).then((value) {
+        if(value.isSuccess){
+          authController.filterData(country: _selectedCountry,gender: _selectedGender);
+        }
+      });
     } catch (e) {
       log('Error loading more data: $e', error: e);
     }
