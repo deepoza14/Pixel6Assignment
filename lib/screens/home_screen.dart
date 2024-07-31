@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:pixel6assignment/controller/getxcontroller/auth_controller.dart';
 import 'package:pixel6assignment/services/input_decoration.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -29,8 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     Timer.run(() {
+      /// Calling API
       Get.find<AuthController>().getUsersData(offset: offset, skip: 0, isClear: true);
 
+      /// Pagination
       _listScrollController.addListener(() {
         if (_listScrollController.position.pixels >= _listScrollController.position.maxScrollExtent - 400) {
           loadMoreData();
@@ -46,16 +47,33 @@ class _HomeScreenState extends State<HomeScreen> {
         return;
       }
 
+      /// Increasing Offset for More Data
       offset += 1;
       log('Loading more data - Offset: $offset');
+
       await authController.getUsersData(offset: offset, skip: (offset - 1) * 20).then((value) {
-        if(value.isSuccess){
-          authController.filterData(country: _selectedCountry,gender: _selectedGender);
+        if (value.isSuccess) {
+          /// Filter the new response Data
+          authController.filterData(country: _selectedCountry, gender: _selectedGender);
         }
       });
     } catch (e) {
       log('Error loading more data: $e', error: e);
     }
+  }
+
+  /// Sorting Data, The function for sorting data can be invoked within the GetX controller.
+
+  void _onSort(int columnIndex) {
+    setState(() {
+      if (_sortColumnIndex == columnIndex) {
+        _sortAscending = !_sortAscending;
+      } else {
+        _sortColumnIndex = columnIndex;
+        _sortAscending = true;
+      }
+    });
+    _sortData(columnIndex, _sortAscending);
   }
 
   void _sortData(int columnIndex, bool ascending) {
@@ -82,18 +100,6 @@ class _HomeScreenState extends State<HomeScreen> {
     authController.update();
   }
 
-  void _onSort(int columnIndex) {
-    setState(() {
-      if (_sortColumnIndex == columnIndex) {
-        _sortAscending = !_sortAscending;
-      } else {
-        _sortColumnIndex = columnIndex;
-        _sortAscending = true;
-      }
-    });
-    _sortData(columnIndex, _sortAscending);
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -104,6 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
         surfaceTintColor: Colors.white,
         title: const Text("Employees"),
         actions: [
+          /// Country Filter: Country data get from unique user-address-country from list
           SizedBox(
             height: 40,
             width: 200,
@@ -113,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 setState(() {
                   _selectedCountry = newValue;
                 });
-                Get.find<AuthController>().filterCountryData(newValue);
+                Get.find<AuthController>().filterData(country: _selectedCountry, gender: _selectedGender);
               },
               items: Get.find<AuthController>().uniqueCountries.map((country) {
                 return DropdownMenuItem<String>(
@@ -129,6 +136,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(width: 15),
+
+          /// Filter Gender using first letter of string.
           SizedBox(
             height: 40,
             width: 200,
@@ -139,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _selectedGender = newValue;
                 });
                 log(newValue!.toLowerCase(), name: "Gender");
-                Get.find<AuthController>().filterGenderData(newValue);
+                Get.find<AuthController>().filterData(country: _selectedCountry, gender: _selectedGender);
               },
               items: _genders.map((gender) {
                 return DropdownMenuItem<String>(

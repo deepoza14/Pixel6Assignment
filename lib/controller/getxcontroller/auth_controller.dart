@@ -31,6 +31,7 @@ class AuthController extends GetxController implements GetxService {
   String? _selectedCountry;
   String? _selectedGender;
 
+  /// API for getting userdata from api response
   Future<ResponseModel> getUsersData({
     int? offset,
     int? skip,
@@ -64,14 +65,18 @@ class AuthController extends GetxController implements GetxService {
         } else {
           allUsersData.addAll(data);
           usersData = List.from(allUsersData);
+
+          /// Getting Unique Country
           uniqueCountries = usersData.map((user) => user.address?.country ?? "").toSet().toList();
+          /// Added India for country filter testing.
+          // uniqueCountries.addAll({'India'});
           uniqueCountries.forEach((element) {
             log('Unique country: $element');
           });
         }
         responseModel = ResponseModel(true, '${response.body['message']}', response.body);
       } else {
-        responseModel = ResponseModel(false, '${response.body['message']}', response.body);
+        responseModel = ResponseModel(false, '${response.statusText}', '${response.body}');
       }
     } catch (e) {
       responseModel = ResponseModel(false, "Exception occurred");
@@ -84,22 +89,16 @@ class AuthController extends GetxController implements GetxService {
     return responseModel;
   }
 
+
+
   void filterData({String? country, String? gender}) {
+    _selectedCountry = country;
+    _selectedGender = gender;
     usersData = allUsersData.where((user) {
       bool matchesCountry = country == null || country.isEmpty || user.address?.country == country;
       bool matchesGender = gender == null || user.gender?[0].toLowerCase() == gender[0].toLowerCase();
       return matchesCountry && matchesGender;
     }).toList();
     update();
-  }
-
-  void filterCountryData(String? country) {
-    _selectedCountry = country;
-    filterData(country: country, gender: _selectedGender);
-  }
-
-  void filterGenderData(String? gender) {
-    _selectedGender = gender;
-    filterData(country: _selectedCountry, gender: gender);
   }
 }
