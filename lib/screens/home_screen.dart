@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  /// Sorting Data, The function for sorting data can be invoked within the GetX controller.
+  /// Sorting Data, The function for sorting data can also be invoked within the GetX controller.
 
   void _onSort(int columnIndex) {
     setState(() {
